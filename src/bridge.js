@@ -49,7 +49,7 @@ StripeInboundBridge.prototype = {
       amount: options.amount * 100.0,
       currency: "USD",
       card: options.token,
-      description: '$'+options.amount / 100.0 + ' worth of XRP',
+      description: '$'+options.amount+' worth of XRP',
     })
     .done(function(charge) {
       self.gatewayd.data.models.externalTransactions.create({
