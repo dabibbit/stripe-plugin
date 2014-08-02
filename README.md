@@ -10,14 +10,10 @@ Inbound bridge from credit card networks to ripple via Stripe and gatewayd
 
     module.exports = function(gatewayd) {
 
-      // Create an express.Router with Stripe logic
-      var stripeInboundBridge = new SripeInboundBridgePlugin({
-        gatewayd: gatewayd,
+      StripeInboundBridgePlugin.attach({
         stripeApiKey: gatewayd.config.get('STRIPE_API_KEY')
+        gatewayd: gatewayd
       });
-
-      // Attach the Stripe Inbound Bridge to the gateway web app server
-      gatewayd.server.router.use('/stripe/payments', sripeInboundBridge); 
     }
 
 Register with Stripe to obtain API credentials, and add them to your gatewayd's config/config.json file.
