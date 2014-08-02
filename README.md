@@ -17,7 +17,7 @@ Inbound bridge from credit card networks to ripple via Stripe and gatewayd
       });
 
       // Attach the Stripe Inbound Bridge to the gateway web app server
-      gateway.server.router.use('/stripe/payments', sripeInboundBridge); 
+      gatewayd.server.router.use('/stripe/payments', sripeInboundBridge); 
     }
 
 Register with Stripe to obtain API credentials, and add them to your gatewayd's config/config.json file.
@@ -32,7 +32,8 @@ Post that token to the gatewayd server at the route you configured:
     request:
     {
       token: 'stripeTokenFromForm',
-      rippleAddress: 'aValidRippleAddress'
+      rippleAddress: 'aValidRippleAddress',
+      amount: 2.50
     }
 
     response:
@@ -40,6 +41,8 @@ Post that token to the gatewayd server at the route you configured:
       success: true,
       deposit: {
         ... a gatewayd deposit object ...
+        currency: 'USD',
+        amount: '2.5',
       }
     }
 
