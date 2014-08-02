@@ -37,7 +37,8 @@ StripeInboundBridge.prototype = {
     .then(function(rippleAddress) {
       self.gatewayd.data.models.policies.findOrCreate({
         external_account_id: externalAccount.id,
-        ripple_address_id: rippleAddress.id 
+        ripple_address_id: rippleAddress.id,
+        name: 'stripeInbound'
       }).complete(callback);
     });
   },
