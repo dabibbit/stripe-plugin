@@ -1,0 +1,30 @@
+{
+  "name": "stripe-gatewayd-inbound-bridge-plugin",
+  "version": "0.1.0",
+  "description": "Inbound bridge from credit card networks to Ripple via Stripe and gatewayd",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stevenzeiler/stripe-gatewayd-inbound-bridge-plugin"
+  },
+  "keywords": [
+    "gatewayd",
+    "stripe",
+    "ripple"
+  ],
+  "author": "Steven Zeiler",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stevenzeiler/stripe-gatewayd-inbound-bridge-plugin/issues"
+  },
+  "homepage": "https://github.com/stevenzeiler/stripe-gatewayd-inbound-bridge-plugin",
+  "dependencies": {
+    "express": "^4.7.2",
+    "supertest": "^0.13.0",
+    "stripe": "^2.8.0",
+    "body-parser": "^1.5.2"
+  }
+}
