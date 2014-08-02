@@ -16,7 +16,8 @@ describe("Stripe Inbound Bridge", function() {
     appServer = express();
     appServer.use(bodyParser.json());
     var plugin = new StripeInboundBridgePlugin({
-      gatewayd: gatewayd
+      gatewayd: gatewayd,
+      stripeApiKey: stripeApiKey
     });
     appServer.use('/bridges/stripe', plugin);
   });
@@ -62,7 +63,8 @@ describe("Stripe Inbound Bridge", function() {
       bridge = new StripeInboundBridge({
         stripeToken: token.id,
         rippleAddress: 'r4EwBWxrx5HxYRyisfGzMto3AT8FZiYdWk',
-        gatewayd: gatewayd
+        gatewayd: gatewayd,
+        stripeApiKey: process.env.STRIPE_API_KEY
       });
       bridge.save(function(error, policy) {
         createdPolicy = policy;

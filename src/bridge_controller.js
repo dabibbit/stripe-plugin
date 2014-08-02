@@ -2,6 +2,7 @@ var StripeInboundBridge = require(__dirname+'/bridge.js');
 
 function StripeInboundBridgeController(options) {
   this.gatewayd = options.gatewayd;
+  this.stripeApiKey = options.stripeApiKey
 }
 
 StripeInboundBridgeController.prototype = {

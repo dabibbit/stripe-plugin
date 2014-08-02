@@ -1,6 +1,6 @@
 {
   "name": "stripe-gatewayd-inbound-bridge-plugin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Inbound bridge from credit card networks to Ripple via Stripe and gatewayd",
   "main": "index.js",
   "scripts": {
