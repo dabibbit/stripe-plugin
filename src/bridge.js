@@ -1,10 +1,10 @@
-var stripe = require("stripe")(process.env.STRIPE_API_KEY);
+var stripe = require('stripe');
 
 function StripeInboundBridge(options) {
   this.stripeToken = options.stripeToken;
   this.rippleAddress = options.rippleAddress;
   this.gatewayd = options.gatewayd;
-  this.stripe = options.stripe;
+  this.stripe = stripe(options.stripeApiKey);
   if (!options.stripeToken) {
     return new Error({
      field: 'stripeToken',
@@ -45,20 +45,24 @@ StripeInboundBridge.prototype = {
  
   makeDeposit: function(options, callback) {
     var self = this;
-    stripe.charges.create({
+    self.stripe.charges.create({
       amount: options.amount * 100.0,
       currency: "USD",
       card: options.token,
       description: '$'+options.amount+' worth of XRP',
-    })
-    .done(function(charge) {
-      self.gatewayd.data.models.externalTransactions.create({
-        external_account_id: options.policy.external_account_id,
-        amount: options.amount,
-        currency: 'USD',
-        uid: charge.id,
-        deposit: true
-      }).complete(callback)
+    }, function(error, charge){
+      if (error) {
+        callback(error, null);
+      } else {
+        self.gatewayd.data.models.externalTransactions.create({
+          external_account_id: options.policy.external_account_id,
+          amount: options.amount,
+          currency: 'USD',
+          uid: charge.id,
+          deposit: true,
+          status: 'queued'
+        }).complete(callback)
+      }
     });
   }
 }
