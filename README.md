@@ -10,7 +10,7 @@ Inbound bridge from credit card networks to ripple via Stripe and gatewayd
 
     module.exports = function(gatewayd) {
 
-      gatewayd.server.user('/stripe', new StripeInboundBridgePlugin({
+      gatewayd.server.use('/stripe', new StripeInboundBridgePlugin({
         stripeApiKey: gatewayd.config.get('STRIPE_API_KEY')
         gatewayd: gatewayd
       }));
