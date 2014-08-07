@@ -15,14 +15,15 @@ StripeInboundBridgeController.prototype = {
       gatewayd: self.gatewayd
     });
     if (bridge instanceof Error) {
-      return response.send(500, {
+      console.log('ERROR', Error);
+      return response.status(500).send({
         success: false,
         error: bridge.message
       });
     }
-    bridge.save(function(error, policy) {
+    bridge.save(function(error, externalAccount) {
       if (error) {
-        return response.send(500, {
+        return response.status(500).send({
           success: false,
           error: error
         });
@@ -30,10 +31,10 @@ StripeInboundBridgeController.prototype = {
       bridge.makeDeposit({
         token: request.body.stripeToken,
         amount: request.body.amount,
-        policy: policy
+        externalAccount: externalAccount
       }, function(error, deposit) {
         if (error) {
-          response.send(500, {
+          response.status(500).send({
             success: false,
             error: error
           });
