@@ -1,6 +1,7 @@
 var stripe = require('stripe');
 var crypto = require('crypto');
 var random = function(){ return crypto.randomBytes(16).toString('hex'); };
+var GatewaydError = require(__dirname+'/gatewayd_error.js');
 
 function StripeInboundBridge(options) {
   this.stripeToken = options.stripeToken;
@@ -8,13 +9,13 @@ function StripeInboundBridge(options) {
   this.gatewayd = options.gatewayd;
   this.stripe = stripe(options.stripeApiKey);
   if (!options.stripeToken) {
-    return new Error({
+    return new GatewaydError({
      field: 'stripeToken',
      message: 'invalid stripe token'
     });
   }
   if (!options.gatewayd.validator.isRippleAddress(options.rippleAddress)) {
-    throw new Error({
+    throw new GatewaydError({
       field: 'rippleAddress',
       message: 'invalid ripple address'
     });
