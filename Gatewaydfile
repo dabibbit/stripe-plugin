@@ -1,0 +1,12 @@
+var StripeInboundBridgePlugin = require('stripe-inbound-bridge-plugin');
+
+module.exports = function(gatewayd) {
+
+  var stripePlugin = new StripeInboundBridgePlugin({
+    stripeApiKey: gatewayd.config.get('STRIPE_API_KEY'),
+    gatewayd: gatewayd
+  });
+
+  gatewayd.server.use('/stripe', stripePlugin);
+}
+
