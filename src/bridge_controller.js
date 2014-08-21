@@ -1,4 +1,5 @@
 var StripeInboundBridge = require(__dirname+'/bridge.js');
+var GatewaydError = require(__dirname+'/gatewayd_error.js');
 
 function StripeInboundBridgeController(options) {
   this.gatewayd = options.gatewayd;
@@ -15,27 +16,28 @@ StripeInboundBridgeController.prototype = {
       gatewayd: self.gatewayd
     });
     if (bridge instanceof Error) {
-      return response.send(500, {
+      console.log('ERROR', bridge.toJSON());
+      return response.status(500).send({
         success: false,
-        error: bridge.message
+        error: bridge.toJSON()
       });
     }
-    bridge.save(function(error, policy) {
+    bridge.save(function(error, externalAccount) {
       if (error) {
-        return response.send(500, {
+        return response.status(500).send({
           success: false,
-          error: error
+          error: error.toJSON()
         });
       }
       bridge.makeDeposit({
         token: request.body.stripeToken,
         amount: request.body.amount,
-        policy: policy
+        externalAccount: externalAccount
       }, function(error, deposit) {
         if (error) {
-          response.send(500, {
+          response.status(500).send({
             success: false,
-            error: error
+            error: error.toJSON()
           });
         } else {
           response.send({

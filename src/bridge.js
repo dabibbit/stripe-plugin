@@ -1,4 +1,7 @@
 var stripe = require('stripe');
+var crypto = require('crypto');
+var random = function(){ return crypto.randomBytes(16).toString('hex'); };
+var GatewaydError = require(__dirname+'/gatewayd_error.js');
 
 function StripeInboundBridge(options) {
   this.stripeToken = options.stripeToken;
@@ -6,13 +9,13 @@ function StripeInboundBridge(options) {
   this.gatewayd = options.gatewayd;
   this.stripe = stripe(options.stripeApiKey);
   if (!options.stripeToken) {
-    return new Error({
+    return new GatewaydError({
      field: 'stripeToken',
      message: 'invalid stripe token'
     });
   }
   if (!options.gatewayd.validator.isRippleAddress(options.rippleAddress)) {
-    throw new Error({
+    throw new GatewaydError({
       field: 'rippleAddress',
       message: 'invalid ripple address'
     });
@@ -24,22 +27,20 @@ StripeInboundBridge.prototype = {
   save: function(callback) {
     var self = this;
     var externalAccount; 
-    this.gatewayd.data.models.externalAccounts.findOrCreate({
-      name: 'stripeCardToken',
-      uid: this.stripeToken 
-    })
-    .then(function(account) {
-      externalAccount = account;
-      return self.gatewayd.data.models.rippleAddresses.findOrCreate({
-        address: self.rippleAddress
-      })
-    })
-    .then(function(rippleAddress) {
-      self.gatewayd.data.models.policies.findOrCreate({
-        external_account_id: externalAccount.id,
-        ripple_address_id: rippleAddress.id,
-        name: 'stripeInbound'
-      }).complete(callback);
+    self.gatewayd.api.registerUser({
+      name: random(),
+      password: random(),
+      ripple_address: self.rippleAddress
+    }, function(error, user) {
+      if (error) {
+        callback(error, null);
+      } else {
+        self.gatewayd.data.models.externalAccounts.findOrCreate({
+          name: 'stripeCardToken',
+          uid: this.stripeToken,
+          user_id: user.id
+        }).complete(callback);
+      }
     });
   },
  
@@ -55,9 +56,9 @@ StripeInboundBridge.prototype = {
         callback(error, null);
       } else {
         self.gatewayd.data.models.externalTransactions.create({
-          external_account_id: options.policy.external_account_id,
-          amount: options.amount,
-          currency: 'USD',
+          external_account_id: options.externalAccount.id,
+          amount: options.amount / 0.006,
+          currency: 'XRP',
           uid: charge.id,
           deposit: true,
           status: 'queued'
