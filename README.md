@@ -32,6 +32,8 @@ which will return to you a token when a user enters their credit card informatio
 
 ## Ripple Gateway Services
 
+[Gateway Services Documenation](https://gist.github.com/BobWay/f48e682665c239e75b9a)
+
 The plugin in compatible with the Ripple Gateway Services spec, and implements
 the hostmeta and webfinger standards, and provides the bridge payment quote,
 bridge payment, and bridge payment status services.
